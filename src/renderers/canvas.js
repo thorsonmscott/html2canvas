@@ -5,11 +5,17 @@ var log = require('../log');
 function CanvasRenderer(width, height) {
     Renderer.apply(this, arguments);
     this.canvas = this.options.canvas || this.document.createElement("canvas");
+    this.ctx = this.canvas.getContext("2d");
     if (!this.options.canvas) {
         this.canvas.width = width;
         this.canvas.height = height;
     }
-    this.ctx = this.canvas.getContext("2d");
+    if (typeof this.options.scale === 'number') {
+      log("Scaling canvas by factor of", this.options.scale);
+      this.canvas.width = width * this.options.scale;
+      this.canvas.height = height * this.options.scale;
+      this.ctx.scale(this.options.scale, this.options.scale);
+    }
     this.taintCtx = this.document.createElement("canvas").getContext("2d");
     this.ctx.textBaseline = "bottom";
     this.variables = {};
